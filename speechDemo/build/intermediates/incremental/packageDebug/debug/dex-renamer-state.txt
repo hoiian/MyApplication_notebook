@@ -1,0 +1,4 @@
+#Mon Jun 03 20:54:43 CST 2019
+base.0=/Users/hoiian_w/MyApplication_notebook/speechDemo/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex
