@@ -54,10 +54,7 @@ id group_create_layout
 id group_item_content
 id group_manager_layout
 id group_mygroup_layout
-id iat_cancel
 id iat_recognize
-id iat_recognize_stream
-id iat_stop
 id iat_text
 id identify_item_number
 id identify_item_score

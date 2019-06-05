@@ -94,9 +94,11 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 	private String[] mCloudVoicersEntries;
 	private String[] mCloudVoicersValue ;
 	private String[] sentences;
-	private String[] command_last_sen = {"repeat the last sentence。","please repeat the last sentence。","repeat just the last sentence。","please repeat just the last sentence。"};
-	private String[] command_repeat_from_start = {"repeat from the beginning。","repeat from start。"};
-	private String[] command_delete_last_sen = {"delete the last sentence。","刪掉上一句。"};
+	private String[] command_last_sen = {"重复上一句","repeat the last sentence","please repeat the last sentence","repeat just the last sentence","please repeat just the last sentence","repeat only the last sentence","please repeat only the last sentence","say the last sentence","please say the last sentence","say just the last sentence","please say just the last sentence","say only the last sentence","please say only the last sentence","read the last sentence","please read the last sentence","read just the last sentence","please read just the last sentence","read only the last sentence","please read only the last sentence","please read only this sentence","read only this sentence","please read just this sentence","read just this sentence","please read this sentence","read this sentence","please say only this sentence","say only this sentence","please say just this sentence","say just this sentence","please say this sentence","say this sentence","please repeat only this sentence","repeat only this sentence","please repeat just this sentence","repeat just this sentence","please repeat this sentence","repeat this sentence","please read only the sentence","read only the sentence","please read just the sentence","read just the sentence","please read the sentence","read the sentence","please say only the sentence","say only the sentence","please say just the sentence","say just the sentence","please say the sentence","say the sentence","please repeat only the sentence","repeat only the sentence","please repeat just the sentence","repeat just the sentence","please repeat the sentence","repeat the sentence","could you repeat the last sentence","could you repeat","could you read the last sentence","could you please read the last sentence","could you please repeat the last sentence","repeat the previous sentence","read the previous sentence","please read the previous sentence","please repeat the previous sentence"};
+	private String[] command_repeat_from_start = {"从头念一次","从头念一遍","repeat from the beginning","repeat from start","read from the beginning"};
+	private String[] command_delete_last_sen = {"delete the last sentence","删掉上一句"};
+	private String[] command_delete_everything = {"delete everything","全部删掉"};
+	private String[] command_change_last_sen_to = {"change the last sentence to","turn the last sentence to","把上一句改成"};
 	private int num_sentence = 20;
 	private int now_sentence = -1;
 	private int num_show =10;
@@ -204,11 +206,11 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 	 */
 	private void initLayout() {
 		findViewById(R.id.iat_recognize).setOnClickListener(IatDemo.this);
-		findViewById(R.id.iat_recognize_stream).setOnClickListener(IatDemo.this);
+//		findViewById(R.id.iat_recognize_stream).setOnClickListener(IatDemo.this);
 //		findViewById(R.id.iat_upload_contacts).setOnClickListener(IatDemo.this);
 //		findViewById(R.id.iat_upload_userwords).setOnClickListener(IatDemo.this);
-		findViewById(R.id.iat_stop).setOnClickListener(IatDemo.this);
-		findViewById(R.id.iat_cancel).setOnClickListener(IatDemo.this);
+//		findViewById(R.id.iat_stop).setOnClickListener(IatDemo.this);
+//		findViewById(R.id.iat_cancel).setOnClickListener(IatDemo.this);
 		findViewById(R.id.image_iat_set).setOnClickListener(IatDemo.this);
 	}
 
@@ -258,19 +260,19 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 			}
 			break;
 		// 音频流识别
-		case R.id.iat_recognize_stream:
-			executeStream();
-			break;
-		// 停止听写
-		case R.id.iat_stop:
-			mIat.stopListening();
-			showTip("停止听写");
-			break;
-		// 取消听写
-		case R.id.iat_cancel:
-			mIat.cancel();
-			showTip("取消听写");
-			break;
+//		case R.id.iat_recognize_stream:
+//			executeStream();
+//			break;
+//		// 停止听写
+//		case R.id.iat_stop:
+//			mIat.stopListening();
+//			showTip("停止听写");
+//			break;
+//		// 取消听写
+//		case R.id.iat_cancel:
+//			mIat.cancel();
+//			showTip("取消听写");
+//			break;
 		// 上传联系人
 //		case R.id.iat_upload_contacts:
 //			showTip(getString(R.string.text_upload_contacts));
@@ -417,11 +419,11 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 		String result_now = resultBuffer.toString();
 		String last = result_now.substring(result_now.length()-1);
 		Log.i("listen",last);
-		boolean complete = (last.equals("。") || last.equals("？") || last.equals("！"));
+		boolean complete = (last.equals("。") || last.equals("？") || last.equals("！") || last.equals("，"));
 		if (complete != true)
 			return;
 		for(int i=0; i<command_last_sen.length; i++ ) {
-			if (result_now.equals(command_last_sen[i])) {
+			if (result_now.contains(command_last_sen[i])) {
 				Log.i("listen", "complete");
 				//new HTTPRequestTask().execute(resultBuffer.toString());
 				setParamtts();
@@ -431,13 +433,14 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 				} else {
 					int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 				}
-				result_now = "command - " + result_now;
-				result_now = "";
+				now_sentence -= 1 ;
+//				result_now = "command - " + result_now;
+				result_now = " ";
 			}
 		}
 
 			for(int i = 0; i < command_repeat_from_start.length ; i++) {
-				if (result_now.equals(command_repeat_from_start[i])) {
+				if (result_now.contains(command_repeat_from_start[i])) {
 					Log.i("listen", "complete");
 					//new HTTPRequestTask().execute(resultBuffer.toString());
 					setParamtts();
@@ -453,14 +456,14 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 					} else {
 						int code = mTts.startSpeaking(new String("No First sentence."), mTtsListener);
 					}
-
-					result_now = "command - " + result_now;
-					result_now = "";
+					now_sentence -= 1 ;
+//					result_now = "command - " + result_now;
+					result_now = " ";
 				}
 			}
 
 			for(int i=0; i<command_delete_last_sen.length; i++ ) {
-				if (result_now.equals(command_delete_last_sen[i])) {
+				if (result_now.contains(command_delete_last_sen[i])) {
 					Log.i("listen", "complete");
 					//new HTTPRequestTask().execute(resultBuffer.toString());
 					setParamtts();
@@ -471,14 +474,55 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 					} else {
 						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 					}
-					result_now = "Deleted: " + result_now;
-					result_now = "";
+					now_sentence -= 1 ;
+//					result_now = "Deleted: " + result_now;
+					result_now = " ";
+
+				}
+			}
+			for(int i=0; i<command_delete_everything.length; i++ ) {
+				if (result_now.contains(command_delete_everything[i])) {
+					Log.i("listen", "complete");
+					//new HTTPRequestTask().execute(resultBuffer.toString());
+					setParamtts();
+					if (now_sentence > -1) {
+						int code = mTts.startSpeaking(new String("Deleted everything."), mTtsListener);
+						now_sentence = -1 ;
+
+					} else {
+						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
+					}
+					now_sentence -= 1 ;
+	//					result_now = "Deleted: " + result_now;
+					result_now = " ";
 
 				}
 			}
 
+		for(int i=0; i<command_change_last_sen_to.length; i++ ) {
+			if (result_now.contains(command_change_last_sen_to[i])) {
+				Log.i("listen", "complete");
+				//new HTTPRequestTask().execute(resultBuffer.toString());
+				setParamtts();
+				if (now_sentence > -1) {
+
+					sentences[now_sentence] = result_now.replace(command_change_last_sen_to[i],"");
+					int code = mTts.startSpeaking(sentences[now_sentence], mTtsListener);
+
+				} else {
+					int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
+				}
+				now_sentence -= 1 ;
+				//					result_now = "Deleted: " + result_now;
+				result_now = " ";
+
+			}
+		}
+
 		now_sentence += 1;
-		sentences[now_sentence] = result_now;
+			if(!result_now.equals(" ")){
+				sentences[now_sentence] = result_now;
+			}
 
 		String toshow = "";
 		int start = now_sentence - num_show;
@@ -486,7 +530,7 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 			start = 0;
 		for(int i =start;i <= now_sentence;i++)
 		{
-			toshow += sentences[i] + "\n";
+			toshow += sentences[i];
 		}
 		mResultText.setText(toshow);
 		mResultText.setSelection(mResultText.length());

@@ -76,7 +76,7 @@ public class IseDemo extends Activity implements OnClickListener {
 		public void onError(SpeechError error) {
 			mIseStartButton.setEnabled(true);
 			if(error != null) {	
-				showTip("error:"+ error.getErrorCode() + "," + error.getErrorDescription());
+				showTip("error:"+ error.getErrorCode() + ","+ error.getErrorDescription());
 				mResultEditText.setText("");
 				mResultEditText.setHint("请点击“开始评测”按钮");
 			} else {
