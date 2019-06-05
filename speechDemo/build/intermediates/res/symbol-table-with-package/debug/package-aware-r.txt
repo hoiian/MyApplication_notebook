@@ -55,7 +55,6 @@ id group_item_content
 id group_manager_layout
 id group_mygroup_layout
 id iat_cancel
-id iat_contacts
 id iat_recognize
 id iat_recognize_stream
 id iat_stop

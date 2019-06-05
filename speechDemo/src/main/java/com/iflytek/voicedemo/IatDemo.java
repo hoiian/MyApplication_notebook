@@ -94,10 +94,12 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 	private String[] mCloudVoicersEntries;
 	private String[] mCloudVoicersValue ;
 	private String[] sentences;
-	private String[] command = {"重复。", "再读一下。","read the last sentence。"};
+	private String[] command_last_sen = {"repeat the last sentence。","please repeat the last sentence。","repeat just the last sentence。","please repeat just the last sentence。"};
+	private String[] command_repeat_from_start = {"repeat from the beginning。","repeat from start。"};
+	private String[] command_delete_last_sen = {"delete the last sentence。","刪掉上一句。"};
 	private int num_sentence = 20;
 	private int now_sentence = -1;
-	private int num_show =5;
+	private int num_show =10;
 	String texts = "";
 
 	// 缓冲进度
@@ -179,7 +181,7 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 		mSharedPreferencesTTS = getSharedPreferences(TtsSettings.PREFER_NAME, MODE_PRIVATE);
 		mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 		mResultText = ((EditText) findViewById(R.id.iat_text));
-		showContacts = (EditText) findViewById(R.id.iat_contacts);
+//		showContacts = (EditText) findViewById(R.id.iat_contacts);
 		/*handler = new Handler(){
 		    @Override
             public void handleMessage(Message msg)
@@ -418,21 +420,63 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 		boolean complete = (last.equals("。") || last.equals("？") || last.equals("！"));
 		if (complete != true)
 			return;
+		for(int i=0; i<command_last_sen.length; i++ ) {
+			if (result_now.equals(command_last_sen[i])) {
+				Log.i("listen", "complete");
+				//new HTTPRequestTask().execute(resultBuffer.toString());
+				setParamtts();
+				if (now_sentence > -1) {
+					int code = mTts.startSpeaking(sentences[now_sentence], mTtsListener);
 
-		if(result_now.equals(command[0])) {
-			Log.i("listen", "complete");
-			//new HTTPRequestTask().execute(resultBuffer.toString());
-			setParamtts();
-			if (now_sentence > -1) {
-				int code = mTts.startSpeaking(sentences[now_sentence], mTtsListener);
-
+				} else {
+					int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
+				}
+				result_now = "command - " + result_now;
+				result_now = "";
 			}
-			else
-			{
-				int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
-			}
-			result_now = "command[0] - " + result_now;
 		}
+
+			for(int i = 0; i < command_repeat_from_start.length ; i++) {
+				if (result_now.equals(command_repeat_from_start[i])) {
+					Log.i("listen", "complete");
+					//new HTTPRequestTask().execute(resultBuffer.toString());
+					setParamtts();
+					System.out.println("hihi");
+					if (now_sentence > -1) {
+						int code;
+						String wholetext="";
+						for (int j = 0; j <= now_sentence; j++) {
+							wholetext = wholetext + sentences[j];
+						}
+							code = mTts.startSpeaking(wholetext, mTtsListener);
+
+					} else {
+						int code = mTts.startSpeaking(new String("No First sentence."), mTtsListener);
+					}
+
+					result_now = "command - " + result_now;
+					result_now = "";
+				}
+			}
+
+			for(int i=0; i<command_delete_last_sen.length; i++ ) {
+				if (result_now.equals(command_delete_last_sen[i])) {
+					Log.i("listen", "complete");
+					//new HTTPRequestTask().execute(resultBuffer.toString());
+					setParamtts();
+					if (now_sentence > -1) {
+						int code = mTts.startSpeaking(new String("Deleted"), mTtsListener);
+						now_sentence -= 1 ;
+
+					} else {
+						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
+					}
+					result_now = "Deleted: " + result_now;
+					result_now = "";
+
+				}
+			}
+
 		now_sentence += 1;
 		sentences[now_sentence] = result_now;
 
