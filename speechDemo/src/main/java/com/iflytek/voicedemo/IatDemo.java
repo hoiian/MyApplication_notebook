@@ -99,6 +99,7 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 	private String[] command_delete_last_sen = {"delete the last sentence","删掉上一句"};
 	private String[] command_delete_everything = {"delete everything","全部删掉"};
 	private String[] command_change_last_sen_to = {"change the last sentence to","turn the last sentence to","把上一句改成"};
+	private String[] command_new_line = {"换行","换下一行"};
 	private int num_sentence = 20;
 	private int now_sentence = -1;
 	private int num_show =10;
@@ -434,7 +435,6 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 					int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 				}
 				now_sentence -= 1 ;
-//				result_now = "command - " + result_now;
 				result_now = " ";
 			}
 		}
@@ -457,7 +457,6 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 						int code = mTts.startSpeaking(new String("No First sentence."), mTtsListener);
 					}
 					now_sentence -= 1 ;
-//					result_now = "command - " + result_now;
 					result_now = " ";
 				}
 			}
@@ -475,7 +474,6 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 					}
 					now_sentence -= 1 ;
-//					result_now = "Deleted: " + result_now;
 					result_now = " ";
 
 				}
@@ -493,7 +491,6 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 					}
 					now_sentence -= 1 ;
-	//					result_now = "Deleted: " + result_now;
 					result_now = " ";
 
 				}
@@ -513,16 +510,32 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 					int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
 				}
 				now_sentence -= 1 ;
-				//					result_now = "Deleted: " + result_now;
 				result_now = " ";
 
 			}
 		}
 
-		now_sentence += 1;
-			if(!result_now.equals(" ")){
-				sentences[now_sentence] = result_now;
+		if (result_now.contains("把") && result_now.contains("改成")){
+			String old_text = result_now.substring(result_now.indexOf("把")+1,result_now.indexOf("改成"));
+			String new_text = result_now.substring(result_now.indexOf("改成")+2,result_now.length()-1);
+//			int code = mTts.startSpeaking(old_text, mTtsListener);
+			System.out.println(old_text);
+			System.out.println(new_text);
+
+			for(int i=0; i<= now_sentence; i++){
+				if(sentences[i].contains(old_text)){
+					sentences[i] = sentences[i].replace(old_text,new_text);
+                     int code = mTts.startSpeaking(sentences[i], mTtsListener);
+				}
 			}
+			now_sentence -= 1 ;
+			result_now = " ";
+		}
+
+		now_sentence += 1;
+		if(!result_now.equals(" ")){
+			sentences[now_sentence] = result_now;
+		}
 
 		String toshow = "";
 		int start = now_sentence - num_show;
