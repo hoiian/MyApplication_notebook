@@ -54,8 +54,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		//mscInit(null);//采用sdk默认url
 		SimpleAdapter listitemAdapter = new SimpleAdapter();
 		((ListView) findViewById(R.id.listview_main)).setAdapter(listitemAdapter);
-
-
+		final Intent mainIntent = new Intent(MainActivity.this, IatDemo.class);
 	}
 
 	@Override

@@ -14,13 +14,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp" >
+        android:layout_marginBottom="20dp" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Dictation example"
+            android:text="Notebook"
+            android:textStyle="bold"
             android:textSize="30sp" />
 
         <ImageButton

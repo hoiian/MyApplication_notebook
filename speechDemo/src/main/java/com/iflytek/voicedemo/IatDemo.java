@@ -94,13 +94,21 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 	private String[] mCloudVoicersEntries;
 	private String[] mCloudVoicersValue ;
 	private String[] sentences;
-	private String[] command_last_sen = {"重复上一句","repeat the last sentence","please repeat the last sentence","repeat just the last sentence","please repeat just the last sentence","repeat only the last sentence","please repeat only the last sentence","say the last sentence","please say the last sentence","say just the last sentence","please say just the last sentence","say only the last sentence","please say only the last sentence","read the last sentence","please read the last sentence","read just the last sentence","please read just the last sentence","read only the last sentence","please read only the last sentence","please read only this sentence","read only this sentence","please read just this sentence","read just this sentence","please read this sentence","read this sentence","please say only this sentence","say only this sentence","please say just this sentence","say just this sentence","please say this sentence","say this sentence","please repeat only this sentence","repeat only this sentence","please repeat just this sentence","repeat just this sentence","please repeat this sentence","repeat this sentence","please read only the sentence","read only the sentence","please read just the sentence","read just the sentence","please read the sentence","read the sentence","please say only the sentence","say only the sentence","please say just the sentence","say just the sentence","please say the sentence","say the sentence","please repeat only the sentence","repeat only the sentence","please repeat just the sentence","repeat just the sentence","please repeat the sentence","repeat the sentence","could you repeat the last sentence","could you repeat","could you read the last sentence","could you please read the last sentence","could you please repeat the last sentence","repeat the previous sentence","read the previous sentence","please read the previous sentence","please repeat the previous sentence"};
-	private String[] command_repeat_from_start = {"从头念一次","从头念一遍","repeat from the beginning","repeat from start","read from the beginning"};
-	private String[] command_delete_last_sen = {"delete the last sentence","删掉上一句"};
-	private String[] command_delete_everything = {"delete everything","全部删掉"};
-	private String[] command_change_last_sen_to = {"change the last sentence to","turn the last sentence to","把上一句改成"};
-	private String[] command_new_line = {"换行","换下一行"};
-	private int num_sentence = 20;
+	private String[] command_last_sen = {"重复上一句","repeat the last sentence","please repeat the last sentence","repeat just the last sentence","please repeat just the last sentence","repeat only the last sentence","please repeat only the last sentence","say the last sentence","please say the last sentence","say just the last sentence","please say just the last sentence","say only the last sentence","please say only the last sentence","read the last sentence","please read the last sentence","read just the last sentence","please read just the last sentence","read only the last sentence","please read only the last sentence","please read only this sentence","read only this sentence","please read just this sentence","read just this sentence","please read this sentence","read this sentence","please say only this sentence","say only this sentence","please say just this sentence","say just this sentence","please say this sentence","say this sentence","please repeat only this sentence","repeat only this sentence","please repeat just this sentence","repeat just this sentence","please repeat this sentence","repeat this sentence","please read only the sentence","read only the sentence","please read just the sentence","read just the sentence","please read the sentence","read the sentence","please say only the sentence","say only the sentence","please say just the sentence","say just the sentence","please say the sentence","say the sentence","please repeat only the sentence","repeat only the sentence","please repeat just the sentence","repeat just the sentence","please repeat the sentence","repeat the sentence","could you repeat the last sentence","could you repeat","could you read the last sentence","could you please read the last sentence","could you please repeat the last sentence","repeat the previous sentence","read the previous sentence","please read the previous sentence","please repeat the previous sentence","read what I just said","can you repeat the sentence that I mentioned","please repeat the sentence alone","please repeat the sentence that I changed so far","thats correct read the full sentence","can you reread the sentence" };
+	private String[] command_repeat_from_start = {"我想听听看我刚刚讲了什么","从头念一次","从头念一遍","从头读一次","请整段复述一遍","repeat from the beginning","repeat from start","read from the beginning","please repeat the whole paragragh","repeat everything"};
+	private String[] command_delete_last_sen = {"这一句删掉","删掉上一句","delete the last sentence"};
+	private String[] command_delete_everything = {"全部删掉","delete everything"};
+	private String[] command_change_last_sen_to = {"把上一句改成","change the last sentence to","rewrite the last sentence to","correct the last sentence to","lets change the last sentence to"};
+	private String[] command_new_line = {"换行","换下一行","换一行","go to the next line","go to the next paragraph","return"};
+	private String[] command_change = {"把","change","correct","turn"};
+	private String[] command_to = {"改成","to"};
+	private String[] command_delete_sen_contain = {"delete the sentence have","delete the sentence include","delete the sentence contain","删掉那句有"};
+	//	有某字的那句删掉
+	//	中间穿插一句
+	//	加标点
+	//	删掉UM..AH..
+
+	private int num_sentence = 30;
 	private int now_sentence = -1;
 	private int num_show =10;
 	String texts = "";
@@ -488,7 +496,7 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 						now_sentence = -1 ;
 
 					} else {
-						int code = mTts.startSpeaking(new String("No last sentence."), mTtsListener);
+						int code = mTts.startSpeaking(new String("There is nothing can be deleted."), mTtsListener);
 					}
 					now_sentence -= 1 ;
 					result_now = " ";
@@ -515,22 +523,85 @@ public class IatDemo<command> extends Activity implements OnClickListener {
 			}
 		}
 
-		if (result_now.contains("把") && result_now.contains("改成")){
-			String old_text = result_now.substring(result_now.indexOf("把")+1,result_now.indexOf("改成"));
-			String new_text = result_now.substring(result_now.indexOf("改成")+2,result_now.length()-1);
-//			int code = mTts.startSpeaking(old_text, mTtsListener);
-			System.out.println(old_text);
-			System.out.println(new_text);
+		for(int i=0; i<command_new_line.length; i++ ) {
+			if (result_now.contains(command_new_line[i])) {
+				Log.i("listen", "complete");
+				//new HTTPRequestTask().execute(resultBuffer.toString());
+				setParamtts();
+				if (now_sentence > -1) {
+					int code = mTts.startSpeaking(new String("New line."), mTtsListener);
 
-			for(int i=0; i<= now_sentence; i++){
-				if(sentences[i].contains(old_text)){
-					sentences[i] = sentences[i].replace(old_text,new_text);
-                     int code = mTts.startSpeaking(sentences[i], mTtsListener);
+				} else {
+					int code = mTts.startSpeaking(new String("This is the first sentence."), mTtsListener);
 				}
+//				now_sentence -= 1 ;
+				result_now = "\n";
+
 			}
-			now_sentence -= 1 ;
-			result_now = " ";
 		}
+
+		for(int i=0; i<command_change.length; i++ ) {
+			if (result_now.contains(command_change[i]) && result_now.contains(command_to[i])) {
+				Log.i("listen", "complete");
+				//new HTTPRequestTask().execute(resultBuffer.toString());
+				setParamtts();
+				if (now_sentence > -1) {
+					String old_text = result_now.substring(result_now.indexOf(command_change[i]) + command_change[i].length(), result_now.indexOf(command_to[i]));
+					String new_text = result_now.substring(result_now.indexOf(command_to[i]) + command_to[i].length(), result_now.length() - 1);
+	//			int code = mTts.startSpeaking(old_text, mTtsListener);
+					System.out.println(old_text);
+					System.out.println(new_text);
+
+					for (int j = 0; j <= now_sentence; j++) {
+						if (sentences[j].contains(old_text)) {
+							sentences[j] = sentences[j].replace(old_text, new_text);
+							int code = mTts.startSpeaking(sentences[j], mTtsListener);
+	//						return; ??? change only the last one or not?
+						}
+					}
+				} else {
+					int code = mTts.startSpeaking(new String("failed."), mTtsListener);
+				}
+				now_sentence -= 1;
+				result_now = " ";
+			}
+		}
+
+//		command_delete_sen_contain
+		for(int i=0; i<command_delete_sen_contain.length; i++ ) {
+			if (result_now.contains(command_delete_sen_contain[i])) {
+				Log.i("listen", "complete");
+				String delete_word = result_now.substring(result_now.indexOf(command_delete_sen_contain[i]) + command_delete_sen_contain[i].length(),result_now.length() - 1);
+				System.out.println(delete_word);
+				//new HTTPRequestTask().execute(resultBuffer.toString());
+				setParamtts();
+				if (now_sentence > -1) {
+
+					for (int j = 0; j <= now_sentence; j++) {
+						if (sentences[j].contains(delete_word)) {
+							sentences[j] = "";
+							int code = mTts.startSpeaking("The sentence contains" + delete_word + "is deleted", mTtsListener);
+						}else{
+							int code = mTts.startSpeaking("There are no sentence contains" + delete_word, mTtsListener);
+						}
+					}
+
+
+				} else {
+					int code = mTts.startSpeaking(new String("failed."), mTtsListener);
+				}
+				now_sentence -= 1;
+				result_now = " ";
+
+			}
+		}
+
+//		if (result_now.contains("陈宣伟")) {
+//			Log.i("listen", "complete");
+//			setParamtts();
+//			result_now = result_now.replace("陈宣伟", "智障");
+//			int code = mTts.startSpeaking(result_now, mTtsListener);
+//		}
 
 		now_sentence += 1;
 		if(!result_now.equals(" ")){
