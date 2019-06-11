@@ -1,4 +1,4 @@
-#Mon Jun 10 02:18:37 CST 2019
+#Tue Jun 11 09:26:20 CST 2019
 base.0=/Users/hoiian_w/MyApplication_notebook/speechDemo/build/intermediates/dex/debug/mergeDexDebug/out
 path.0=classes.dex
 renamed.0=classes.dex
